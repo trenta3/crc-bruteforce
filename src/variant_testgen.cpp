@@ -1,10 +1,10 @@
-#include <stdio>
-#include <stdlib>
+#include <stdio.h>
+#include <stdlib.h>
 #include <fstream>
 #include <iostream>
 #include <vector>
 #include <string>
-#include <time>
+#include <time.h>
 using namespace std;
 
 int main(int argc, char * argv[]) {
@@ -12,11 +12,11 @@ int main(int argc, char * argv[]) {
 		cerr << "Error: not enough arguments provided." << endl;
 	}
 	ofstream fout (argv[1]);
-	unsigned int N=(int)(argv[2][0]);
-	unsigned int M=(int)(argv[3][0]);
+	int N=argv[2][0]-'0';
+	int M=argv[3][0]-'0';
 	srand(time(NULL));
 	
-	unsigned int i,j;
+	int i,j;
 	for(j=0;j<M;j++) {
 		for(i=0;i<32*N;i++) {
 			fout << rand()%2;

@@ -126,8 +126,7 @@ int main(int argc, char* argv[] ) {
 	// scrittura output
 	
 	if( fout.is_open() ) {
-	        int option=0, j;
-	        uint i;
+		int option=0; int j; uint i;
 		int check= 1 << D; string oldtemp; string newtemp;
 		int mask;
 		while ( option && check == 0) {
@@ -154,7 +153,7 @@ int main(int argc, char* argv[] ) {
 				cout <<endl;
 				//stampa il CRC
 				polyprint(outputString[i].substr(0,32), fout);
-				cout<<endl<<"*"<<endl;			
+				cout<<endl<<"#"<<endl;			
 			}
 			option++;			
 		}
