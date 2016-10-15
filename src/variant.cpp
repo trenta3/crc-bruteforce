@@ -119,15 +119,14 @@ int main(int argc, char* argv[] ) {
 			outputString.push_back(line);
 		}
 	} else {
-		cout << "Error: impossible to open input.txt.\n";	
+		cout << "Error: impossible to open input file.\n";	
 	}
 	
 	outputString.resize(inputString.size());
 	// scrittura output
 	
 	if( fout.is_open() ) {
-	        int option=0, j;
-	        uint i;
+		int option=0; int j; uint i;
 		int check= 1 << D; string oldtemp; string newtemp;
 		int mask;
 		while ( option && check == 0) {
@@ -154,13 +153,13 @@ int main(int argc, char* argv[] ) {
 				cout <<endl;
 				//stampa il CRC
 				polyprint(outputString[i].substr(0,32), fout);
-				cout<<endl;			
+				cout<<endl<<"#"<<endl;			
 			}
 			option++;			
 		}
 		
 	} else {
-		cout << "Error: impossible to open output.txt.\n";
+		cout << "Error: impossible to open output file.\n";
 	
 	}
 
