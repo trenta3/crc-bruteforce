@@ -28,13 +28,15 @@ it of degree d.
 
 Basic step are:
 
-* Using `...` convert your files to the bit representation:
+* Using `file2binary` convert your files to the bit representation
   
-  
-* Using `...` generate all possible modes of operation of the machine
+* Using `variant` generate all possible modes of operation of the machine
   generating the CRCs.
   
-* Using `...` finally solve all CRCs challenges and hope there will be
-  some polynomials remaining.
+* Using `calculateCRCpolynomial` finally solve all CRCs challenges and
+  hope there will be some useful output.
 
+COMING SOON:
+You can also let the system generate the infos regarding the CRC found
+and generate CRC for you from your files
 
