@@ -9,10 +9,12 @@
 #define D 6
 using namespace std;
 
+typedef unsigned int uint;
+
 int _BIT_=0;
 
 void polyprint( string s, ofstream& out) {
-	int i;
+	uint i;
 	for(i=0;i<s.size();i++) {
 		if(s[i] == '1') { 
 			if(i>1) {
@@ -31,7 +33,7 @@ void polyprint( string s, ofstream& out) {
 }
 
 void machine ( int par, string& in, string& out ) {
-	int i;
+	uint i;
 	//applico la trasformazione	
 	switch(par) {
 	
@@ -42,7 +44,7 @@ void machine ( int par, string& in, string& out ) {
 		case 2:
 			out.clear();
 			out.resize(in.size());
-			int pos;
+			uint pos;
 			if (_BIT_ == 1 ) {
 				pos=0;
 				while(pos+32 <= in.size() ) {
@@ -124,7 +126,8 @@ int main(int argc, char* argv[] ) {
 	// scrittura output
 	
 	if( fout.is_open() ) {
-		int option=0; int i,j;
+	        int option=0, j;
+	        uint i;
 		int check= 1 << D; string oldtemp; string newtemp;
 		int mask;
 		while ( option && check == 0) {
