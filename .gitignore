@@ -2,3 +2,5 @@
 *#
 *.bak
 *.save
+bin/
+tmp/
