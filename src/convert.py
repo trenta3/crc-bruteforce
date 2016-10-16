@@ -104,34 +104,36 @@ extract_parts = lambda string: (extract_content(string), extract_crc(string))
 #                Content normal or reverse
 #                CRC standard or bit complement
 endianness = [
-    (lambda x: x),
-    (lambda x: str_change_endianness(16, x)),
-    (lambda x: str_change_endianness(32, x))
+    (lambda x: x, 'standard endianness'),
+    (lambda x: str_change_endianness(16, x), 'changed endianness 16'),
+    (lambda x: str_change_endianness(32, x), 'changed endianness 32')
 ];
 
 # After extracting crc and content we have a list of couples: (Content, CRC)
 
 crc_reverse = [
-    (lambda (x, y): (x, y)),
-    (lambda (x, y): (x, str_reverse(y)))
+    (lambda (x, y): (x, y), 'crc untouched'),
+    (lambda (x, y): (x, str_reverse(y)), 'crc reversed')
 ];
 
 content_reverse = [
-    (lambda (x, y): (x, y)),
-    (lambda (x, y): (str_reverse(x), y))
+    (lambda (x, y): (x, y), 'content untouched'),
+    (lambda (x, y): (str_reverse(x), y), 'content reversed')
 ];
 
 crc_complement = [
-    (lambda (x, y): (x, y)),
-    (lambda (x, y): (x, str_complement(y)))
+    (lambda (x, y): (x, y), 'crc uncomplemented'),
+    (lambda (x, y): (x, str_complement(y)), 'crc complemented')
 ];
 
 # We generate all function composition of applying the given function in the order (its reverse of classical order composition)
-variants = map(lambda x: fn_compose(*x), map(list, itertools.product(endianness, [extract_parts], crc_reverse, content_reverse, crc_complement)))
+variants = map(lambda (x, y): (fn_compose(*(list(x))), ", ".join(list(y))),
+               map(lambda x: zip(*x),
+                   map(list, itertools.product(endianness, [(extract_parts, '')], crc_reverse, content_reverse, crc_complement))))
 
 with open_if_filename(args.out_file, "w") as f:
-    for variant in variants:
-        f.write("# Begin Variant\n")
+    for (variant, description) in variants:
+        f.write("# Begin Variant: " + description + "\n")
         for string in initialstrings:
             (lambda (cont, crc): f.write(cont + "\n" + crc + "\n"))(variant(string))
         
