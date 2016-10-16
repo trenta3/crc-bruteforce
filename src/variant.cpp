@@ -12,16 +12,18 @@ using namespace std;
 typedef unsigned int uint;
 
 int _BIT_=0;
+//int TESTING=2;
 
 void polyprint( string s, ofstream& out) {
-	uint i;
+	uint i; int counter=0;
 	for(i=0;i<s.size();i++) {
 		if(s[i] == '1') { 
-			if(i>1) {
+			if(counter>0) {
 				out << "+";
 			}
 			out<<"x^";
 			out << i;
+			counter++;
 		} else if(s[i] == '0') {
 		
 		} else {
@@ -32,12 +34,19 @@ void polyprint( string s, ofstream& out) {
 	return;
 }
 
+void bitprint( string s, ofstream& out) {
+	out << s;
+	return;
+}
+ 
 void machine ( int par, string& in, string& out ) {
 	uint i;
+	//if(par != TESTING) return;
 	//applico la trasformazione	
 	switch(par) {
 	
 		case 1:
+			out.assign(in);
 			_BIT_=1;
 			break;
 		
@@ -129,7 +138,7 @@ int main(int argc, char* argv[] ) {
 		int option=0; int j; uint i;
 		int check= 1 << D; string oldtemp; string newtemp;
 		int mask;
-		while ( option && check == 0) {
+		while ( (option & check) == 0) {
 			for(i=0;i<inputString.size();i++) {
 				mask=1;
 				oldtemp.assign(inputString[i]);
@@ -137,8 +146,10 @@ int main(int argc, char* argv[] ) {
 				//pulisco le condizioni iniziali
 				_BIT_=0;
 				// faccio le modifiche indicate dall'option
+				//cout << "OPTION " << option << endl;
 				for(j=0;j<D;j++) {
-					if(mask&&option) {
+					//cout << oldtemp << endl;
+					if((mask&option) > 0) {
 						machine(j+1,oldtemp,newtemp);
 					}
 					mask=mask<<1;
@@ -147,14 +158,21 @@ int main(int argc, char* argv[] ) {
 				outputString[i].assign(newtemp);
 			}
 			//stampo outputString sul file
-			for(i=0;i<outputString.size();i++) {
-				//stampa la stringa
-				polyprint(outputString[i].substr(32, outputString[i].size()-32), fout);
-				cout <<endl;
-				//stampa il CRC
-				polyprint(outputString[i].substr(0,32), fout);
-				cout<<endl<<"#"<<endl;			
-			}
+			//printf("option %d, control %d\n", option, (1<<(TESTING-1)));
+			//if(option ==(1 << (TESTING-1)) || (option == 0) ) {
+				for(i=0;i<outputString.size();i++) {
+					//stampa la stringa
+					//printf("Printing string\n");
+					//fout << "printing string" << endl;
+					bitprint(outputString[i].substr(32, outputString[i].size()-32), fout);
+					fout <<endl;
+					//stampa il CRC
+					//printf("Printing CRC\n");
+					//fout << "printing CRC" << endl;
+					bitprint(outputString[i].substr(0,32), fout);
+					fout<<endl<<"#"<<endl;			
+				}
+			//}
 			option++;			
 		}
 		
