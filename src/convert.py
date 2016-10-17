@@ -31,9 +31,9 @@ def crc_part (stream, crc_start, crc_width):
 # Returns the content part of the input stream
 def content_part (stream, content_start, content_end):
     if content_end == 'end':
-        return stream[content_start:]
+        return stream[int(content_start):]
     else:
-        return stream[content_start:content_end]
+        return stream[int(content_start):int(content_end)]
 
 # Opens the filename if it is a filename, otherwise it is a stream and just returns it
 class open_if_filename:
@@ -76,7 +76,7 @@ parser = argparse.ArgumentParser(
     fromfile_prefix_chars='@')
 parser.add_argument('--crc-start', '-Cs', nargs='?', dest='crc_start', type=int, default=0, help='number of CRC start bit (from 0). Default: 0')
 parser.add_argument('--crc-width', '-Cw', nargs='?', dest='crc_width', type=int, default=16, help='width in bit of CRC. Default: 16')
-parser.add_argument('--content-start', '-cs', nargs='?', dest='content_start', action=AfterCRCAction, help='start of content. Default: after CRC')
+parser.add_argument('--content-start', '-cs', nargs='?', dest='content_start', default=16, help='start of content. Default: after CRC')
 parser.add_argument('--content-end', '-ce', nargs='?', dest='content_end', default='end', help='end of content. Default: end of stream')
 parser.add_argument('--files', '-f', nargs='+', dest='files', default=[sys.stdin], help='filenames to process. Default: stdin')
 parser.add_argument('--out-file', '-o', nargs='?', dest='out_file', default=sys.stdout, help='output file name. Default: stdout')
@@ -135,5 +135,5 @@ with open_if_filename(args.out_file, "w") as f:
     for (variant, description) in variants:
         f.write("# Begin Variant: " + description + "\n")
         for string in initialstrings:
-            (lambda (cont, crc): f.write(cont + "\n" + crc + "\n"))(variant(string))
+            (lambda (cont, crc): f.write(polyconvert(cont) + "\n" + polyconvert(crc) + "\n"))(variant(string))
         
