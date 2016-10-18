@@ -27,18 +27,20 @@
  
 using namespace std;
 
+typedef long int lint;
 typedef unsigned int uint;
+typedef unsigned long int ulint;
 
 class F2poly {
 	public:
 		vector<uint> poly;
-		int deg;
+		lint deg;
 		
 		F2poly(){
 			deg=0;
 		};
 		
-		F2poly(int d, vector<uint> V) {
+		F2poly(lint d, vector<uint> V) {
 			deg=d;
 			poly=V;	
 		};
@@ -58,7 +60,7 @@ class F2poly {
 		}
 		
 		void print(ofstream& out) {
-			int i;
+			lint i;
 			for(i=0;i<deg;i++) {
 				out << get(self, i);
 			}
@@ -66,7 +68,7 @@ class F2poly {
 		}
 		
 		void print() {
-			int i;
+			lint i;
 			for(i=0;i<deg;i++) {
 				cout << get(self, i);
 			}
@@ -75,8 +77,17 @@ class F2poly {
 		
 		}
 
+  void print(ulint u) {
+    lint i;
+    for (i=0; i<u; i++) {
+      cout << get(self, i);
+    }
+    cout << endl;
+  }
+
 		void syzigy(F2poly Q, int gamma) {
-			int i;
+			lint i;
+			cerr << ".";
 			
 			if(Q.deg==0) {
 			  cerr << "Cannot syzigy by 0.\n";
@@ -91,7 +102,7 @@ class F2poly {
 
 			    // Se dobbiano scrivere un 1 troppo avanti ci mettiamo degli zeri prima
 			    if (tmp == 1) {
-			      int newdeg = max(deg, i+1), j;
+			      lint newdeg = max(deg, i+1), j;
 			      for (j = newdeg - 1; j >= deg; j--)
 				{ set(self, j, 0); }
 			      deg = newdeg;
@@ -110,7 +121,7 @@ class F2poly {
 		}
 		
 		void mod(F2poly Q) {
-
+		  cerr << "Entering in MOD" << endl;
 			if(Q.deg==0) {
 			  cerr << "Cannot divide by 0.\n";
 				return;
@@ -123,26 +134,45 @@ class F2poly {
 		}
 		
 		F2poly& operator=(const F2poly& P) {
+
+		  // Self-assignment guard
+		  if (this == &P)
+		    return *this;
+		  
 		  deg = P.deg;
 		  poly = P.poly;
-			return *this;
+		  return *this;
 		}
 		
 };
 
 
 
-F2poly gcd(F2poly& P, F2poly& Q) {
-			F2poly A = (P.deg>=Q.deg)?P:Q;
-			F2poly B = (P.deg>=Q.deg)?Q:P;
+F2poly& gcd(F2poly& P, F2poly& Q) {
+  cerr << "Entering in GCD" << endl;
+
+  F2poly& A = (P.deg>=Q.deg)?P:Q;
+			F2poly& B = (P.deg>=Q.deg)?Q:P;
 			if(B.deg == 0) {
 				return A;
 			} else {
 				A.mod(B);
-				F2poly T = F2poly(gcd(A, B));
-				return T;
+				return gcd(A,B);
 			}
 		}
+
+F2poly gdd(F2poly& P, F2poly& Q) {
+  cerr << "Entering in GCD" << endl;
+
+  F2poly A = (P.deg>=Q.deg)?P:Q;
+  F2poly B = (P.deg>=Q.deg)?Q:P;
+  if(B.deg == 0) {
+    return A;
+  } else {
+    return B;
+  }
+}
+
 		
 int main(int argc, char * argv[]) {
 	ifstream fin (argv[1]);
@@ -150,7 +180,7 @@ int main(int argc, char * argv[]) {
 	
 	F2poly P = F2poly(), Q = F2poly(), R;
 	string line;
-	int gamma;
+	int gamma = 0;
 	vector<F2poly> CRC;
 	vector<F2poly> firm;
 	F2poly temp = F2poly();
@@ -182,7 +212,7 @@ int main(int argc, char * argv[]) {
 	
 	while( CRC.size() >= 2) {
 	  F2poly tmp;
-	  tmp = gcd(CRC[CRC.size()-1], CRC[CRC.size()-2]);
+	  tmp = F2poly(gcd(CRC[CRC.size()-1], CRC[CRC.size()-2]));
 		CRC.pop_back();
 		CRC.pop_back();
 		CRC.push_back(tmp);
