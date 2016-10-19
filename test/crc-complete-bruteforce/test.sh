@@ -7,7 +7,7 @@ cp ../../src/{crc-complete-bruteforce.c,debug.h} bin/
 if [ "$1" != "" ]; then
     if [ -d "$1" ]; then
 	cp $1/program.c bin/program-$1.c
-	gcc -g bin/program-$1.c -o bin/prog$1 -Wall -Wextra -Wsign-conversion -Werror
+	g++ -g bin/program-$1.c -o bin/prog$1 -Wall -Wextra -Wsign-conversion -Werror
     
 	if [ "$?" != "0" ]; then
 	    echo "crc-complete-bruteforce: FAILED TO COMPILE TEST $1"
@@ -28,7 +28,7 @@ else
 	dir=${folder%%/};
 	
 	cp ${dir}/program.c bin/program-${dir}.c
-	gcc -g bin/program-${dir}.c -o bin/prog${dir} -Wall -Wextra -Wsign-conversion -Werror
+	g++ -g bin/program-${dir}.c -o bin/prog${dir} -Wall -Wextra -Wsign-conversion -Werror
 	if [ "$?" != "0" ]; then
 	    echo "crc-complete-bruteforce: FAILED TO COMPILE TEST ${dir}"
 	    exit 1
