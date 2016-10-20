@@ -126,17 +126,15 @@ void f2p_print(F2Polynomial& P) {
 // Function to and two polynomials
 void f2p_and(F2Polynomial& P, F2Polynomial& Q) {
   ulint i;
-  if (divUL(Q.deg) >= (P.size))
+  if (divUL(Q.deg) >= P.size)
     f2p_resize(P, P.size*sz_realloc_coeff);
 
   // TODO: Aumentare efficienza nel caso in cui Q è più corto di P  
   for (i = 0; i < divUL(P.deg); i++)
     P.poly[i] &= Q.poly[i];
   P.poly[i] &= ((1U << modUL(P.deg)) - 1) & Q.poly[i];
-  for (i = divUL(P.deg) + 1; i < divUL(Q.deg); i++)
-    P.poly[i] = Q.poly[i];
-  if (P.deg < Q.deg)
-    P.poly[i] = Q.poly[i] & ((1U << modUL(Q.deg)) - 1);
+  for (i = divUL(P.deg) + 1; i <= divUL(Q.deg); i++)
+    P.poly[i] = 0U;
   P.deg = max(P.deg, Q.deg);
 }
 
