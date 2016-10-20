@@ -15,7 +15,7 @@ if [ "$1" != "" ]; then
 	fi
 	
 	echo "Running example: "
-	diff $1/output.txt <(cat $1/input.txt |  bin/prog$1 )
+	cat <(cat $1/input.txt |  bin/prog$1 )
 	
 	echo "Expected output: "
 	cat $1/output.txt

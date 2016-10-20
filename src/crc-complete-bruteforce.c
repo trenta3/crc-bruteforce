@@ -28,18 +28,24 @@ inline ulint max (ulint a, ulint b) {
 }
 
 // Free the space used by the polynomial
-// PROBLEM: It is not the original address
-void f2p_free(int s __attribute__ ((unused)), void* P) {
-  (*(F2Polynomial*)P).deg = 0;
-  (*(F2Polynomial*)P).size = 0;
-  free((*(F2Polynomial*)P).poly);
+/* void f2p_free(int s __attribute__ ((unused)), void* P) { */
+/*   F2Polynomial Q __attribute__ ((unused)) = *(F2Polynomial*)P; */
+/*   Q.deg = 0; */
+/*   Q.size = 0; */
+/*   fprintf(stderr, "f2p_free: P = %p, *P.poly = %p\n", P, ((F2Polynomial*)P)->poly); */
+/*   free(P); */
+/* } */
+void f2p_free(F2Polynomial& P) {
+  P.size = 0;
+  P.deg = 0;
+  free(P.poly);
 }
 
 // Function to init the polynomial and reserve space for it
 void f2p_init(F2Polynomial& P) {
-  P.poly = (ulint*) calloc(8, sz_ulint);
+  P.poly = (ulint*) malloc(8*sz_ulint);
   check(P.poly == NULL, "in function f2p_init: calloc unable to allocate space. Aborting");
-  on_exit(f2p_free, (void*)&P);
+  //on_exit(f2p_free, (void*)P);
   P.size = 8;
   P.deg = 0;
 }
@@ -129,7 +135,8 @@ void f2p_and(F2Polynomial& P, F2Polynomial& Q) {
   P.poly[i] &= ((1U << modUL(P.deg)) - 1) & Q.poly[i];
   for (i = divUL(P.deg) + 1; i < divUL(Q.deg); i++)
     P.poly[i] = Q.poly[i];
-  P.poly[i] = Q.poly[i] & ((1U << modUL(Q.deg)) - 1);
+  if (P.deg < Q.deg)
+    P.poly[i] = Q.poly[i] & ((1U << modUL(Q.deg)) - 1);
   P.deg = max(P.deg, Q.deg);
 }
 
