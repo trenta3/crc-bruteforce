@@ -27,6 +27,10 @@ inline ulint max (ulint a, ulint b) {
   return (a >= b) ? a : b;
 }
 
+inline ulint min (ulint a, ulint b) {
+  return (a >= b) ? b : a;
+}
+
 // Free the space used by the polynomial
 /* void f2p_free(int s __attribute__ ((unused)), void* P) { */
 /*   F2Polynomial Q __attribute__ ((unused)) = *(F2Polynomial*)P; */
@@ -125,17 +129,38 @@ void f2p_print(F2Polynomial& P) {
 
 // Function to and two polynomials
 void f2p_and(F2Polynomial& P, F2Polynomial& Q) {
+  ulint i, mindeg, maxdeg;
+  if (divUL(Q.deg) >= P.size)
+    f2p_resize(P, P.size*sz_realloc_coeff);
+
+  mindeg = min(P.deg, Q.deg);
+  maxdeg = max(P.deg, Q.deg);
+  
+  for (i = 0; i < divUL(mindeg); i++)
+    P.poly[i] &= Q.poly[i];
+  P.poly[i] &= ((1U << modUL(mindeg)) - 1) & Q.poly[i];
+  for (i = divUL(mindeg) + 1; i <= divUL(maxdeg); i++)
+    P.poly[i] = 0U;
+
+  P.deg = maxdeg;
+}
+
+// Function to ior two polynomials
+void f2p_ior(F2Polynomial& P, F2Polynomial& Q) {
   ulint i;
   if (divUL(Q.deg) >= P.size)
     f2p_resize(P, P.size*sz_realloc_coeff);
 
-  // TODO: Aumentare efficienza nel caso in cui Q è più corto di P  
-  for (i = 0; i < divUL(P.deg); i++)
-    P.poly[i] &= Q.poly[i];
-  P.poly[i] &= ((1U << modUL(P.deg)) - 1) & Q.poly[i];
-  for (i = divUL(P.deg) + 1; i <= divUL(Q.deg); i++)
-    P.poly[i] = 0U;
-  P.deg = max(P.deg, Q.deg);
+  mindeg = min(P.deg, Q.deg);
+  maxdeg = max(P.deg, Q.deg);
+
+  for (i = 0; i < divUL(mindeg); i++)
+    P.poly[i] |= Q.poly[i];
+  P.poly[i] |= ((1U << modUL(mindeg)) - 1) & Q.poly[i];
+  if (P.deg <= Q.deg)
+    for (i = divUL(mindeg) + 1; i <= divUL(maxdeg); i++)
+      P.poly[i] = Q.poly[i];
+  P.deg = maxdeg;
 }
 
 
