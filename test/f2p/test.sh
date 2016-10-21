@@ -2,7 +2,7 @@
 
 mkdir -p bin/
 
-cp ../../src/{crc-complete-bruteforce.c,debug.h} bin/
+cp ../../src/{f2p.c,debug.h} bin/
 
 if [ "$1" != "" ]; then
     if [ -d "$1" ]; then
@@ -10,7 +10,7 @@ if [ "$1" != "" ]; then
 	g++ -g bin/program-$1.c -o bin/prog$1 -Wall -Wextra -Wsign-conversion -Werror
     
 	if [ "$?" != "0" ]; then
-	    echo "crc-complete-bruteforce: FAILED TO COMPILE TEST $1"
+	    echo "f2p: FAILED TO COMPILE TEST $1"
 	    exit 1
 	fi
 	
@@ -30,20 +30,20 @@ else
 	cp ${dir}/program.c bin/program-${dir}.c
 	g++ -g bin/program-${dir}.c -o bin/prog${dir} -Wall -Wextra -Wsign-conversion -Werror
 	if [ "$?" != "0" ]; then
-	    echo "crc-complete-bruteforce: FAILED TO COMPILE TEST ${dir}"
+	    echo "f2p: FAILED TO COMPILE TEST ${dir}"
 	    exit 1
 	fi
 	
-	output=$(diff ${dir}/output.txt <(cat ${dir}/input.txt | bin/prog${dir}));
+	output=$(diff ${dir}/output.txt <(cat ${dir}/input.txt | bin/prog${dir} 2>&1));
 	
 	if [ "${output}" != "" ]; then
-	    echo "crc-complete-bruteforce: ERROR IN TEST ${dir}"
-	    echo "crc-complete-bruteforce: DIFF FOR CASE FOLLOWS"
+	    echo "f2p: ERROR IN TEST ${dir}"
+	    echo "f2p: DIFF FOR CASE FOLLOWS"
 	    echo "${output}"
 	    exit 1
 	fi
     done
     
-    echo "crc-complete-bruteforce: ALL TESTS OK"
+    echo "f2p: ALL TESTS OK"
 fi
 

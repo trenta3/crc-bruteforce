@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "crc-complete-bruteforce.c"
+#include "f2p.c"
 
-/* First test case for crc-complete-bruteforce
+/* First test case for f2p
  * We check if we are able to read a polynomial from a file and to
  * write it out equal.
  */
