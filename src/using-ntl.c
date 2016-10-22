@@ -8,33 +8,6 @@
 using namespace std;
 using namespace NTL;
 
-/*
-  Important functions:
-  void DivRem(GF2X& q, GF2X& r, const GF2X& a, const GF2X& b); // q = a/b, r = a%b
-  GF2X GCD(const GF2X& a, const GF2X& b); // x = GCD(a, b) (zero if a == b == 0)
-  
-  
-I/O format:
-
-   [a_0 a_1 ... a_n],
-
-represents the polynomial a_0 + a_1*X + ... + a_n*X^n.
-
-On output, all coefficients will be 0 or 1, and
-a_n not zero (the zero polynomial is [ ]).  On input, the coefficients
-may be arbitrary integers which are reduced modulo 2, and leading zeros
-stripped.
-
-There is also a more compact hex I/O format.  To output in this
-format, set GF2X::HexOutput to a nonzero value.  On input, if the first
-non-blank character read is 'x' or 'X', then a hex format is assumed.
-
-istream& operator>>(istream& s, GF2X& x);
-ostream& operator<<(ostream& s, const GF2X& a);
-
-*/
-
-
 /* Assumiamo di avere in input (stdin) le rappresentazioni dei
    numeri scritte nella forma che GF2X si aspetta, e gliele diamo in
    pasto e ci facciamo calcolare il GCD di tutte, che viene stampato
@@ -61,8 +34,12 @@ int main (int argc, char *argv[]) {
   string line;
 
   // --- READING CIN FOR DATA
-  // Input the first line with gamma
+  // Input the first line and check if it starts with '#'
   check(!getline(cin, line), "Error: first line not read. Gamma not found");
+  if (line.at(0) == '#') {
+    cout << line;
+    check(!getline(cin, line), "Error: gamma not read in sencond line after #");
+  }
   crc_width = stoi(line);
   // Then input content and crc lines
   while (getline(cin, line)) {

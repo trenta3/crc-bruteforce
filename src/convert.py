@@ -5,6 +5,9 @@ import argparse, sys, itertools, functools
 # Extracts all bits from a file string
 def file2bits (string):
     return "".join([bin(ord(char))[2:].zfill(8) for char in string])
+
+def polyconvert (string):
+    return "[" + " ".join(list(string)) + "]"
         
 # Reverse the string
 def str_reverse (string):
@@ -134,6 +137,7 @@ variants = map(lambda (x, y): (fn_compose(*(list(x))), ", ".join(list(y))),
 with open_if_filename(args.out_file, "w") as f:
     for (variant, description) in variants:
         f.write("# Begin Variant: " + description + "\n")
+        f.write(str(args.crc_width) + "\n")
         for string in initialstrings:
             (lambda (cont, crc): f.write(polyconvert(cont) + "\n" + polyconvert(crc) + "\n"))(variant(string))
         
